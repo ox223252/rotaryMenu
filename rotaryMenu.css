@@ -1,0 +1,91 @@
+/* X    x */
+/* X2   x / 2 */
+/* Y    y */
+/* Y2   y / 2 */
+/* R    r */
+/* Z    zIndex */
+/* Z2   zIndex + 1 */
+/* NBITEM */
+/* D1   transitionDelay */
+/* D2   transitionDureation */
+/* D3   D1 + (NBITEM-1) * D2  */
+
+;ID; {
+	position: relative;
+	width: ;X;px;
+	height: ;Y;px;
+	padding: 0;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	transition-property: width, height;
+	transition-duration: ;D2;s;
+	transition-delay: ;D3;s;
+}
+
+;ID;.active {
+	width: 100%;
+	height: 100%;
+
+	transition-delay: 0s;
+}
+
+;ID; li {
+	z-index: ;Z2;;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: ;X;px;
+	height: ;Y;px;
+	
+	position: absolute;
+}
+
+;ID; li.icon {
+	z-index: ;Z;;
+	left: calc( 50% - ;X2;px );
+
+	visibility: hidden;
+	opacity: 0;
+
+	transition-property: left, transform, transform-origin, opacity, visibility;
+	transition-duration: ;D2;s;
+	transition-delay: calc( ;D1;s * var(--index));
+}
+
+;ID;.active li.icon {
+	left: calc( 50% - ;R;px );
+
+	visibility: visible;
+	opacity: 1;
+
+	transform: rotate( calc( 360deg / -;NBITEM; * var(--index) ) );
+	transform-origin: ;R;px;
+
+	transition-property: left, transform, transform-origin, opacity, visibility;
+	transition-duration: ;D2;s;
+	transition-delay: calc( ;D1;s * var(--index));
+}
+
+;ID; li > div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
+	border: solid black 1px;
+	border-radius: 20%;
+	overflow: hidden;
+
+	transform: rotate( calc( 360deg / ;NBITEM; * var(--index) + 45deg ) );
+	box-shadow: 0px 0px 5px var(--color);
+}
+
+;ID; li > div > div {
+	transform: rotate( -45deg );
+}
