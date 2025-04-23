@@ -83,8 +83,6 @@
 	border-radius: 20%;
 	overflow: hidden;
 	
-	background-color: white;
-
 	transform: rotate( calc( 360deg / ;NBITEM; * var(--index) + 45deg ) );
 	box-shadow: 0px 0px 5px var(--color);
 }
