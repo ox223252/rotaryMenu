@@ -7,6 +7,10 @@ class RotaryMenu {
 			x: 60,
 			y: 60,
 			r: 130,
+			// items:{ // not needed: use general X/Y
+			// 	x:60,
+			// 	y:60,
+			// },
 			transitionDelay: 0.1,
 			transitionDureation: 0.5, 
 			color: [ "red","blue","yellow","orange","green","pink","lightgreen","lightblue" ],
@@ -86,6 +90,8 @@ class RotaryMenu {
 			.then ( r=>r.replace ( /;D1;/g, this.params.transitionDelay ) )
 			.then ( r=>r.replace ( /;D2;/g, this.params.transitionDureation ) )
 			.then ( r=>r.replace ( /;D3;/g, indexOfChild * this.params.transitionDelay ) )
+			.then ( r=>r.replace ( /;X3;/g, this.params?.items?.x || this.params.x ) )
+			.then ( r=>r.replace ( /;Y3;/g, this.params?.items?.y || this.params.y ) )
 			.then ( r=>this.style.innerText = r );
 		
 		this.menuIcon = document.createElement ( "li" );
