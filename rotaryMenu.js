@@ -1,8 +1,23 @@
 class RotaryMenu {
 	#notification = [];
+	#path = undefined;
 
 	constructor ( params )
 	{
+		this.#path = document.currentScript?.src || document.currentScript?.previousElementSibling?.src;
+
+		if ( !this.#path )	
+		{
+			this.#path = Array.from ( document.scripts )
+				.map ( s=> s.src )
+				.filter ( s=>s.toLowerCase ( ).indexOf ( this.constructor.name.toLowerCase ( ) ) > 0 )[ 0 ];
+		}
+
+		if ( !this.#path )
+		{
+			throw "can't define path of script";
+		}
+
 		this.params = {
 			x: 60,
 			y: 60,
@@ -73,8 +88,7 @@ class RotaryMenu {
 		this.style = document.createElement ( "style" );
 		document.head.appendChild ( this.style );
 
-		let path = document.currentScript.src || document.currentScript.previousElementSibling.src;
-		this.baseUrl = path.slice ( 0, path.lastIndexOf ( "/" ) )
+		this.baseUrl = this.#path.slice ( 0, this.#path.lastIndexOf ( "/" ) )
 
 		fetch ( this.baseUrl + "/rotaryMenu.css" )
 			.then ( r=>r.text ( ) )
