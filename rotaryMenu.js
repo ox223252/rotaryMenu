@@ -116,6 +116,24 @@ class RotaryMenu {
 			this.#notifyCheck ( );
 		});
 
+		document.addEventListener ( "keydown", (event)=>{
+			if ( event.defaultPrevented )
+			{
+				return; // Do nothing if the event was already processed
+			}
+
+			if ( "Escape" == event.key )
+			{
+				this.params.target.classList.toggle( "active" );
+				this.#notifyCheck ( );
+				event.preventDefault ( );
+			}
+			else
+			{
+				return;
+			}
+		});
+
 		fetch ( this.baseUrl + "/p2.svg" )
 			.then ( r=>r.text ( ) )
 			.then ( r=>this.menuIcon.innerHTML = r )
