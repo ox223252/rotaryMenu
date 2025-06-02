@@ -22,10 +22,11 @@ class RotaryMenu {
 			x: 60,
 			y: 60,
 			r: 130,
-			// items:{ // not needed: use general X/Y
-			// 	x:60,
-			// 	y:60,
-			// },
+			items:{
+			// 	x:60, // not needed: use general X
+			// 	y:60, // not needed: use general Y
+				content: undefined
+			},
 			transitionDelay: 0.1,
 			transitionDureation: 0.5, 
 			color: [ "red","blue","yellow","orange","green","pink","lightgreen","lightblue" ],
@@ -38,7 +39,7 @@ class RotaryMenu {
 				esc: true,
 				active: true,
 				color: "red",
-				symbol: "X",
+				content: "X",
 				font: undefined,
 			},
 			zIndex:1,
@@ -140,7 +141,7 @@ class RotaryMenu {
 			.then ( r=>r.replace ( /;X3;/g, this.params?.items?.x || this.params.x ) )
 			.then ( r=>r.replace ( /;Y3;/g, this.params?.items?.y || this.params.y ) )
 			.then ( r=>r.replace ( /;CLOSE_SYMBOL_ACTIVE;/g, this.params.close.active?'':'/*' ) )
-			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "\""+this.params.close.symbol+"\"" ) )
+			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "\""+this.params.close.content+"\"" ) )
 			.then ( r=>r.replace ( /;CLOSE_COLOR;/g, this.params.close.color ) )
 			.then ( r=>r.replace ( /;CLOSE_FONT;/g, this.params.close.font ) )
 			.then ( r=>r.replace ( /;TEXT_COLOR;/g, this.params.textColor ) )
@@ -178,7 +179,11 @@ class RotaryMenu {
 			});
 		}
 
-		fetch ( this.baseUrl + "/p2.svg" )
+		if ( this.params.items.content )
+		{
+			this.menuIcon.innerHTML = this.params.items.content;
+		}
+		else fetch ( this.baseUrl + "/p2.svg" )
 			.then ( r=>r.text ( ) )
 			.then ( r=>this.menuIcon.innerHTML = r )
 	}
