@@ -39,6 +39,7 @@ class RotaryMenu {
 				active: true,
 				color: "red",
 				symbol: "X",
+				font: undefined,
 			},
 			zIndex:1,
 		};
@@ -106,7 +107,7 @@ class RotaryMenu {
 
 			if ( 0 == this.params.backColor.indexOf ( "--" ) )
 			{
-				this.params.textColor = "var("+this.params.textColor+")";
+				this.params.backColor = "var("+this.params.backColor+")";
 			}
 
 			if ( 0 == this.params.close.color.indexOf ( "--" ) )
@@ -139,8 +140,9 @@ class RotaryMenu {
 			.then ( r=>r.replace ( /;X3;/g, this.params?.items?.x || this.params.x ) )
 			.then ( r=>r.replace ( /;Y3;/g, this.params?.items?.y || this.params.y ) )
 			.then ( r=>r.replace ( /;CLOSE_SYMBOL_ACTIVE;/g, this.params.close.active?'':'/*' ) )
-			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "'"+this.params.close.symbol+"'" ) )
+			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "\""+this.params.close.symbol+"\"" ) )
 			.then ( r=>r.replace ( /;CLOSE_COLOR;/g, this.params.close.color ) )
+			.then ( r=>r.replace ( /;CLOSE_FONT;/g, this.params.close.font ) )
 			.then ( r=>r.replace ( /;TEXT_COLOR;/g, this.params.textColor ) )
 			.then ( r=>r.replace ( /;BACK_COLOR;/g, this.params.backColor ) )
 			.then ( r=>r.replace ( /\n/g, ' ' ) )

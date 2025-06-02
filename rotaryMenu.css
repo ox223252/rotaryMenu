@@ -14,6 +14,7 @@
 /* CLOSE_COLOR	color of close symbole */
 /* CLOSE_SYMBOL	color of close symbole */
 /* CLOSE_SYMBOL_ACTIVE	use to activate or not colse symbol */
+/* CLOSE_FONT	in case of this font should be different */
 /* BACK_COLOR	item back color */
 /* TEXT_COLOR	text color */
 
@@ -68,6 +69,7 @@
 	right: calc( 100% / 2 - ;X;px );
 	color: ;CLOSE_COLOR;;
 	background-color: ;BACK_COLOR;;
+	font: ;CLOSE_FONT;;
 
 	display: flex;
 	align-items: center;
@@ -92,8 +94,6 @@
 ;ID;.active li:first-child:after {
 	visibility: visible;
 	opacity: 1;
-
-	background-color: var( --main-back );
 
 	transition-duration: 0;
 	transition-delay: 0;
