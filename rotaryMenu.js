@@ -32,10 +32,18 @@ class RotaryMenu {
 			callback:{
 				notification:(el,status,index)=>{}
 			},
+			textColor: "black",
+			backColor: "white",
+			close:{
+				esc: true,
+				active: true,
+				color: "red",
+				symbol: "X",
+			},
 			zIndex:1,
 		};
 
-		Object.assign ( this.params, params );
+		this.params = RotaryMenu.objMerge ( this.params, params );
 
 		if ( !this.params.target )
 		{
@@ -90,6 +98,30 @@ class RotaryMenu {
 
 		this.baseUrl = this.#path.slice ( 0, this.#path.lastIndexOf ( "/" ) )
 
+		// color check
+			if ( 0 == this.params.textColor.indexOf ( "--" ) )
+			{
+				this.params.textColor = "var("+this.params.textColor+")";
+			}
+
+			if ( 0 == this.params.backColor.indexOf ( "--" ) )
+			{
+				this.params.textColor = "var("+this.params.textColor+")";
+			}
+
+			if ( 0 == this.params.close.color.indexOf ( "--" ) )
+			{
+				this.params.close.color = "var("+this.params.close.color+")";
+			}
+
+			for ( let i = 0; i < this.params.color.length; i++ )
+			{
+				if ( 0 == this.params.color[ i ].indexOf ( "--" ) )
+				{
+					this.params.color[ i ] = "var("+this.params.color[ i ]+")";
+				}
+			}
+
 		fetch ( this.baseUrl + "/rotaryMenu.css" )
 			.then ( r=>r.text ( ) )
 			.then ( r=>r.replace ( /;ID;/g, "#"+this.id ) )
@@ -106,7 +138,13 @@ class RotaryMenu {
 			.then ( r=>r.replace ( /;D3;/g, indexOfChild * this.params.transitionDelay ) )
 			.then ( r=>r.replace ( /;X3;/g, this.params?.items?.x || this.params.x ) )
 			.then ( r=>r.replace ( /;Y3;/g, this.params?.items?.y || this.params.y ) )
-			.then ( r=>this.style.innerText = r );
+			.then ( r=>r.replace ( /;CLOSE_SYMBOL_ACTIVE;/g, this.params.close.active?'':'/*' ) )
+			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "'"+this.params.close.symbol+"'" ) )
+			.then ( r=>r.replace ( /;CLOSE_COLOR;/g, this.params.close.color ) )
+			.then ( r=>r.replace ( /;TEXT_COLOR;/g, this.params.textColor ) )
+			.then ( r=>r.replace ( /;BACK_COLOR;/g, this.params.backColor ) )
+			.then ( r=>r.replace ( /\n/g, ' ' ) )
+			.then ( r=>this.style.innerText = r )
 		
 		this.menuIcon = document.createElement ( "li" );
 		this.params.target.prepend ( this.menuIcon )
@@ -116,23 +154,27 @@ class RotaryMenu {
 			this.#notifyCheck ( );
 		});
 
-		document.addEventListener ( "keydown", (event)=>{
-			if ( event.defaultPrevented )
-			{
-				return; // Do nothing if the event was already processed
-			}
+		if ( this.params.close.esc )
+		{ // use ESCAPE key to quit menu
 
-			if ( "Escape" == event.key )
-			{
-				this.params.target.classList.toggle( "active" );
-				this.#notifyCheck ( );
-				event.preventDefault ( );
-			}
-			else
-			{
-				return;
-			}
-		});
+			document.addEventListener ( "keydown", (event)=>{
+				if ( event.defaultPrevented )
+				{
+					return; // Do nothing if the event was already processed
+				}
+
+				if ( "Escape" == event.key )
+				{
+					this.params.target.classList.toggle( "active" );
+					this.#notifyCheck ( );
+					event.preventDefault ( );
+				}
+				else
+				{
+					return;
+				}
+			});
+		}
 
 		fetch ( this.baseUrl + "/p2.svg" )
 			.then ( r=>r.text ( ) )
@@ -192,5 +234,46 @@ class RotaryMenu {
 		}
 
 		throw "unknow ID: "+id;
+	}
+
+	static objMerge ( obj1, obj2 )
+	{
+		let d = {...obj1};
+
+		for ( let s in obj2 )
+		{
+			switch ( obj2[s].constructor.name )
+			{
+				case "Object":
+				{
+					if ( !d[s] )
+					{ // if property doesn't exist deep cpy
+						d[s]={...obj2[s]};
+					}
+					else
+					{
+						d[s] = this.objMerge ( obj1[s], obj2[s] );
+					}
+					break;
+				}
+				case "Array":
+				{
+					d[s]=[...obj2[s]];
+					break;
+				}
+				default:
+				{
+					console.log( obj2[s].constructor.name )
+				}
+				case 'Number':
+				case 'String':
+				{
+					d[s]=obj2[s];
+					break;
+				}
+			}
+		}
+
+		return d
 	}
 }

@@ -11,6 +11,11 @@
 /* D1   transitionDelay */
 /* D2   transitionDureation */
 /* D3   D1 + (NBITEM-1) * D2  */
+/* CLOSE_COLOR	color of close symbole */
+/* CLOSE_SYMBOL	color of close symbole */
+/* CLOSE_SYMBOL_ACTIVE	use to activate or not colse symbol */
+/* BACK_COLOR	item back color */
+/* TEXT_COLOR	text color */
 
 ;ID; {
 	position: absolute;
@@ -53,6 +58,49 @@
 	height: ;Y;px;
 }
 
+;CLOSE_SYMBOL_ACTIVE;
+
+;ID; li:first-child:after {
+	content: ;CLOSE_SYMBOL;;
+
+	position: fixed;
+	top: calc( 100% / 2 - ;Y;px );
+	right: calc( 100% / 2 - ;X;px );
+	color: ;CLOSE_COLOR;;
+	background-color: ;BACK_COLOR;;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: ;X2;px;
+	height: ;Y2;px;
+	padding: 10px;
+	border: solid black 1px;
+	border-radius: 50%;
+	box-shadow: 0px 0px 5px var(--color);
+	overflow: hidden;
+
+	visibility: hidden;
+	opacity: 0;
+
+	transition-property: opacity;
+	transition-duration: ;D1;s;
+	transition-delay: ;D2;s;
+}
+
+;ID;.active li:first-child:after {
+	visibility: visible;
+	opacity: 1;
+
+	background-color: var( --main-back );
+
+	transition-duration: 0;
+	transition-delay: 0;
+}
+
+/* use to deactivated colse symbol */
+
 ;ID; li.icon {
 	z-index: ;Z;;
 	left: calc( 50% - ;X2;px );
@@ -89,6 +137,9 @@
 	border: solid black 1px;
 	border-radius: 20%;
 	overflow: hidden;
+
+	background-color: ;BACK_COLOR;;
+	color: ;TEXT_COLOR;;
 	
 	transform: rotate( calc( 360deg / ;NBITEM; * var(--index) + 45deg ) );
 	box-shadow: 0px 0px 5px var(--color);
