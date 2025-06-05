@@ -11,17 +11,11 @@
 /* D1   transitionDelay */
 /* D2   transitionDureation */
 /* D3   D1 + (NBITEM-1) * D2  */
-/* CLOSE_COLOR	color of close symbole */
-/* CLOSE_SYMBOL	color of close symbole */
-/* CLOSE_SYMBOL_ACTIVE	use to activate or not colse symbol */
-/* CLOSE_FONT	in case of this font should be different */
-/* BACK_COLOR	item back color */
-/* TEXT_COLOR	text color */
 
 ;ID; {
 	position: absolute;
-	width: ;X;px;
-	height: ;Y;px;
+	width: ;IFW;px;
+	height: ;IFH;px;
 	padding: 0;
 	margin: 0;
 
@@ -32,6 +26,7 @@
 	transition-property: width, height;
 	transition-duration: ;D2;s;
 	transition-delay: ;D3;s;
+
 }
 
 ;ID;.active {
@@ -41,46 +36,64 @@
 	transition-delay: 0s;
 }
 
-
 ;ID; li {
 	z-index: ;Z2;;
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
 
-	width: ;X3;px;
-	height: ;Y3;px;
+	width: ;IOW;px;
+	height: ;IOH;px;
+
+	padding: calc( ;IOH;px * 0.2 ) calc( ;IOW;px * 0.2 );
 	
 	position: absolute;
+
 }
 ;ID; li:first-child {
-	width: ;X;px;
-	height: ;Y;px;
+	width: ;IFW;px;
+	height: ;IFH;px;
+}
+;ID;.active li:first-child {
+	width: ;IMW;px;
+	height: ;IMH;px;
+	
+	border-width: 1px;
+	border-radius: 50%;
+	border-style: solid;
+	border-color: black;
+
+	color: var(--text);
+	background-color: var(--back);
+	box-shadow: 0px 0px 5px var(--shadow);
+}
+;ID;.active li:first-child > *:not(.close) {
+	transform: scale( ;IMSH;,;IMSW; );
 }
 
-;CLOSE_SYMBOL_ACTIVE;
+;ID;.active li:first-child *:hover {
+	color: var( --hover );
+}
 
-;ID; li:first-child:after {
-	content: ;CLOSE_SYMBOL;;
-
+;ID; li:first-child > *.close {
 	position: fixed;
-	top: calc( 100% / 2 - ;Y;px );
-	right: calc( 100% / 2 - ;X;px );
-	color: ;CLOSE_COLOR;;
-	background-color: ;BACK_COLOR;;
-	font: ;CLOSE_FONT;;
+	top: calc( 100% / 2 - ;ICY;px );
+	right: calc( 100% / 2 - ;ICX;px );
+	width: ;ICW;px;
+	height: ;ICH;px;
+	color: var(--text);
+	background-color: var(--back);
+	box-shadow: 0px 0px 5px var(--shadow);
 
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding-top: 3px;
 
-	width: ;X2;px;
-	height: ;Y2;px;
-	padding: 10px;
 	border: solid black 1px;
 	border-radius: 50%;
-	box-shadow: 0px 0px 5px var(--color);
 	overflow: hidden;
 
 	visibility: hidden;
@@ -91,7 +104,7 @@
 	transition-delay: ;D2;s;
 }
 
-;ID;.active li:first-child:after {
+;ID;.active li:first-child > *.close {
 	visibility: visible;
 	opacity: 1;
 
@@ -99,11 +112,9 @@
 	transition-delay: 0;
 }
 
-/* use to deactivated colse symbol */
-
 ;ID; li.icon {
 	z-index: ;Z;;
-	left: calc( 50% - ;X2;px );
+	left: calc( 50% - ;IFW;px / 2 );
 
 	visibility: hidden;
 	opacity: 0;
@@ -127,7 +138,7 @@
 	transition-delay: calc( ;D1;s * var(--index));
 }
 
-;ID; li > div {
+;ID; li > div.rotaryMenuDiv {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -138,14 +149,14 @@
 	border-radius: 20%;
 	overflow: hidden;
 
-	background-color: ;BACK_COLOR;;
-	color: ;TEXT_COLOR;;
-	
 	transform: rotate( calc( 360deg / ;NBITEM; * var(--index) + 45deg ) );
-	box-shadow: 0px 0px 5px var(--color);
+	
+	color: var(--text);
+	background-color: var(--back);
+	box-shadow: 0px 0px 5px var(--shadow);
 }
 
-;ID; li > div > div {
+;ID; li > div.rotaryMenuDiv > div {
 	transform: rotate( -45deg );
 	
 	width: 100%;
@@ -154,4 +165,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+;ID; li > div.rotaryMenuDiv > div > *:hover {
+	color: var( --hover );
 }

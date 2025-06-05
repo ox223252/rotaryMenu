@@ -19,31 +19,50 @@ class RotaryMenu {
 		}
 
 		this.params = {
-			x: 60,
-			y: 60,
-			r: 130,
 			items:{
-			// 	x:60, // not needed: use general X
-			// 	y:60, // not needed: use general Y
-				content: undefined
+				r: 175,
+				fold:{
+					width: 80,
+					height: 80,
+				},
+				main:{
+					width: 100,
+					height: 100,
+					scale:{
+						width:2,
+						height:2,
+					}
+				},
+				others:{
+					width: 60,
+					height: 60,
+				},
+				close:{
+					width: 40,
+					height: 40,
+					y: 65,
+					x: 85,
+					content: "X",
+					text: "red",
+					display: true,
+				}
 			},
 			transitionDelay: 0.1,
-			transitionDureation: 0.5, 
-			color: [ "red","blue","yellow","orange","green","pink","lightgreen","lightblue" ],
+			transitionDureation: 0.5,
+			colors:{
+				text: "black",
+				shadow: "black",
+				back: "white",
+				hover: "grey",
+			},
 			callback:{
 				notification:(el,status,index)=>{}
 			},
-			textColor: "black",
-			backColor: "white",
-			close:{
-				esc: true,
-				active: true,
-				color: "red",
-				content: "X",
-				font: undefined,
-			},
+			escape: true,
 			zIndex:1,
 		};
+
+		console.log ( this.params )
 
 		this.params = RotaryMenu.objMerge ( this.params, params );
 
@@ -62,27 +81,40 @@ class RotaryMenu {
 				continue;
 			}
 
-			let color = undefined;
-			if ( this.params?.color?.constructor.name )
+			for ( let key of Object.keys ( this.params.colors ) )
 			{
-				color = this.params.color[ indexOfChild ] || "black";
+				let color = el.style.getPropertyValue ( "--"+key );
+				if ( "" == color )
+				{
+					color = this.params?.colors?. [ key ];
+					el.style.setProperty ( "--"+key, this.params?.colors?. [ key ] );
+				}
+
+				if ( 0 == color?.indexOf ( "--" ) )
+				{
+					el.style.setProperty ( "--"+key, "var(" + color + ")" )
+				}
 			}
-			else if ( "random" === this.params.color )
+
+			el.style.setProperty ( "--index", indexOfChild );
+
+			if ( el == el.parentNode.children[ 0 ] )
 			{
-				color = "rgb("+(Math.random()*256)+","+(Math.random()*256)+","+(Math.random()*256)+")"
+				this.menuIcon = el;
+				continue;
 			}
 
 			let d1 = document.createElement ( "div" );
 			let d2 = document.createElement ( "div" );
 
 			d1.appendChild ( d2 );
+			d1.classList.add ( "rotaryMenuDiv" );
 			d2.innerHTML = el.innerHTML;
 			el.innerHTML = "";
 
 			el.appendChild ( d1 );
 
 			el.style.setProperty ( "--index", indexOfChild );
-			el.style.setProperty ( "--color", color );
 			el.classList.add( "icon" );
 			indexOfChild++;
 		}
@@ -111,53 +143,45 @@ class RotaryMenu {
 				this.params.backColor = "var("+this.params.backColor+")";
 			}
 
-			if ( 0 == this.params.close.color.indexOf ( "--" ) )
+			for ( let i = 0; i < this.params.colors.length; i++ )
 			{
-				this.params.close.color = "var("+this.params.close.color+")";
-			}
-
-			for ( let i = 0; i < this.params.color.length; i++ )
-			{
-				if ( 0 == this.params.color[ i ].indexOf ( "--" ) )
+				if ( 0 == this.params.colors[ i ].indexOf ( "--" ) )
 				{
-					this.params.color[ i ] = "var("+this.params.color[ i ]+")";
+					this.params.colors[ i ] = "var("+this.params.color[ i ]+")";
 				}
 			}
 
 		fetch ( this.baseUrl + "/rotaryMenu.css" )
 			.then ( r=>r.text ( ) )
 			.then ( r=>r.replace ( /;ID;/g, "#"+this.id ) )
-			.then ( r=>r.replace ( /;X;/g, this.params.x ) )
-			.then ( r=>r.replace ( /;X2;/g, this.params.x / 2 ) )
-			.then ( r=>r.replace ( /;Y;/g, this.params.y ) )
-			.then ( r=>r.replace ( /;Y2;/g, this.params.y / 2 ) )
-			.then ( r=>r.replace ( /;R;/g, this.params.r ) )
+			.then ( r=>r.replace ( /;IFW;/g, this.params.items.fold.width ) )
+			.then ( r=>r.replace ( /;IFH;/g, this.params.items.fold.height ) )
+			.then ( r=>r.replace ( /;IMW;/g, this.params.items.main.width ) )
+			.then ( r=>r.replace ( /;IMH;/g, this.params.items.main.height ) )
+			.then ( r=>r.replace ( /;IMSW;/g, this.params.items.main.scale.width ) )
+			.then ( r=>r.replace ( /;IMSH;/g, this.params.items.main.scale.height ) )
+			.then ( r=>r.replace ( /;IOW;/g, this.params.items.others.width ) )
+			.then ( r=>r.replace ( /;IOH;/g, this.params.items.others.height ) )
+			.then ( r=>r.replace ( /;ICX;/g, this.params.items.close.x ) )
+			.then ( r=>r.replace ( /;ICY;/g, this.params.items.close.y ) )
+			.then ( r=>r.replace ( /;ICW;/g, this.params.items.close.width ) )
+			.then ( r=>r.replace ( /;ICH;/g, this.params.items.close.height ) )
+			.then ( r=>r.replace ( /;R;/g, this.params.items.r ) )
 			.then ( r=>r.replace ( /;Z;/g, this.params.zIndex ) )
 			.then ( r=>r.replace ( /;Z2;/g, this.params.zIndex + 1 ) )
 			.then ( r=>r.replace ( /;NBITEM;/g, indexOfChild ) )
 			.then ( r=>r.replace ( /;D1;/g, this.params.transitionDelay ) )
 			.then ( r=>r.replace ( /;D2;/g, this.params.transitionDureation ) )
 			.then ( r=>r.replace ( /;D3;/g, indexOfChild * this.params.transitionDelay ) )
-			.then ( r=>r.replace ( /;X3;/g, this.params?.items?.x || this.params.x ) )
-			.then ( r=>r.replace ( /;Y3;/g, this.params?.items?.y || this.params.y ) )
-			.then ( r=>r.replace ( /;CLOSE_SYMBOL_ACTIVE;/g, this.params.close.active?'':'/*' ) )
-			.then ( r=>r.replace ( /;CLOSE_SYMBOL;/g, "\""+this.params.close.content+"\"" ) )
-			.then ( r=>r.replace ( /;CLOSE_COLOR;/g, this.params.close.color ) )
-			.then ( r=>r.replace ( /;CLOSE_FONT;/g, this.params.close.font ) )
-			.then ( r=>r.replace ( /;TEXT_COLOR;/g, this.params.textColor ) )
-			.then ( r=>r.replace ( /;BACK_COLOR;/g, this.params.backColor ) )
 			.then ( r=>r.replace ( /\n/g, ' ' ) )
 			.then ( r=>this.style.innerText = r )
 		
-		this.menuIcon = document.createElement ( "li" );
-		this.params.target.prepend ( this.menuIcon )
-
 		this.menuIcon.addEventListener ( "click", ()=>{
 			this.params.target.classList.toggle( "active" )
 			this.#notifyCheck ( );
 		});
 
-		if ( this.params.close.esc )
+		if ( this.params.escape )
 		{ // use ESCAPE key to quit menu
 
 			document.addEventListener ( "keydown", (event)=>{
@@ -179,13 +203,25 @@ class RotaryMenu {
 			});
 		}
 
-		if ( this.params.items.content )
+		if ( this.params?.items?.close?.display )
 		{
-			this.menuIcon.innerHTML = this.params.items.content;
+			let close = document.createElement ( "div" );
+			this.menuIcon.appendChild ( close );
+			close.innerHTML = this.params?.items?.close?.content;
+			close.classList.add ( "close" );
+
+			let color = close.style.getPropertyValue ( "--text" );
+			if ( "" == color )
+			{
+				color = this.params?.items?.close?.text;
+				close.style.setProperty ( "--text", this.params?.items?.close?.text );
+			}
+
+			if ( 0 == color?.indexOf ( "--" ) )
+			{
+				close.style.setProperty ( "--text", "var(" + color + ")" )
+			}
 		}
-		else fetch ( this.baseUrl + "/p2.svg" )
-			.then ( r=>r.text ( ) )
-			.then ( r=>this.menuIcon.innerHTML = r )
 	}
 
 	notify ( index, status )
