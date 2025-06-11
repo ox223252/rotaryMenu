@@ -27,6 +27,7 @@
 	transition-duration: ;D2;s;
 	transition-delay: ;D3;s;
 
+	z-index: ;Z2;;
 }
 
 ;ID;.active {
@@ -34,10 +35,10 @@
 	height: 100%;
 
 	transition-delay: 0s;
+	background-color: var(--backMenu);
 }
 
 ;ID; li {
-	z-index: ;Z2;;
 
 	display: flex;
 	align-items: center;
@@ -63,10 +64,10 @@
 	border-width: 1px;
 	border-radius: 50%;
 	border-style: solid;
-	border-color: black;
+	border-color: var(--border);
 
 	color: var(--text);
-	background-color: var(--back);
+	background-color: var(--backItem);
 	box-shadow: 0px 0px 5px var(--shadow);
 }
 ;ID;.active li:first-child > *:not(.close) {
@@ -84,7 +85,7 @@
 	width: ;ICW;px;
 	height: ;ICH;px;
 	color: var(--text);
-	background-color: var(--back);
+	background-color: var(--backItem);
 	box-shadow: 0px 0px 5px var(--shadow);
 
 	display: flex;
@@ -152,7 +153,7 @@
 	transform: rotate( calc( 360deg / ;NBITEM; * var(--index) + 45deg ) );
 	
 	color: var(--text);
-	background-color: var(--back);
+	background-color: var(--backItem);
 	box-shadow: 0px 0px 5px var(--shadow);
 }
 

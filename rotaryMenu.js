@@ -52,7 +52,9 @@ class RotaryMenu {
 			colors:{
 				text: "black",
 				shadow: "black",
-				back: "white",
+				backItem: "white",
+				backMenu: "black",
+				border: "black",
 				hover: "grey",
 			},
 			callback:{
@@ -62,13 +64,26 @@ class RotaryMenu {
 			zIndex:1,
 		};
 
-		console.log ( this.params )
-
 		this.params = RotaryMenu.objMerge ( this.params, params );
 
 		if ( !this.params.target )
 		{
 			throw "need target";
+		}
+
+		for ( let key of Object.keys ( this.params.colors ) )
+		{
+			let color = this.params.target.style.getPropertyValue ( "--"+key );
+			if ( "" == color )
+			{
+				color = this.params?.colors?. [ key ];
+				this.params.target.style.setProperty ( "--"+key, this.params?.colors?. [ key ] );
+			}
+
+			if ( 0 == color?.indexOf ( "--" ) )
+			{
+				this.params.target.style.setProperty ( "--"+key, "var(" + color + ")" )
+			}
 		}
 
 		let indexOfChild = 0;
@@ -79,21 +94,6 @@ class RotaryMenu {
 			{
 				el.parentNode.removeChild ( el );
 				continue;
-			}
-
-			for ( let key of Object.keys ( this.params.colors ) )
-			{
-				let color = el.style.getPropertyValue ( "--"+key );
-				if ( "" == color )
-				{
-					color = this.params?.colors?. [ key ];
-					el.style.setProperty ( "--"+key, this.params?.colors?. [ key ] );
-				}
-
-				if ( 0 == color?.indexOf ( "--" ) )
-				{
-					el.style.setProperty ( "--"+key, "var(" + color + ")" )
-				}
 			}
 
 			el.style.setProperty ( "--index", indexOfChild );
@@ -114,7 +114,6 @@ class RotaryMenu {
 
 			el.appendChild ( d1 );
 
-			el.style.setProperty ( "--index", indexOfChild );
 			el.classList.add( "icon" );
 			indexOfChild++;
 		}
@@ -133,16 +132,6 @@ class RotaryMenu {
 		this.baseUrl = this.#path.slice ( 0, this.#path.lastIndexOf ( "/" ) )
 
 		// color check
-			if ( 0 == this.params.textColor.indexOf ( "--" ) )
-			{
-				this.params.textColor = "var("+this.params.textColor+")";
-			}
-
-			if ( 0 == this.params.backColor.indexOf ( "--" ) )
-			{
-				this.params.backColor = "var("+this.params.backColor+")";
-			}
-
 			for ( let i = 0; i < this.params.colors.length; i++ )
 			{
 				if ( 0 == this.params.colors[ i ].indexOf ( "--" ) )
